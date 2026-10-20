@@ -1,0 +1,4 @@
+<Solution>
+    <Project Path="BeeMart.Api/BeeMart.Api.csproj" />
+    <Project Path="BeeMart.WebClient/BeeMart.WebClient.csproj" />
+</Solution>
