@@ -22,4 +22,15 @@ public class TimeService : ITimeService
 
     public DateTimeOffset ToLocal(DateTime utc) =>
         TimeZoneInfo.ConvertTime(new DateTimeOffset(DateTime.SpecifyKind(utc, DateTimeKind.Utc)), _zone);
+
+    public DateOnly LocalToday => DateOnly.FromDateTime(LocalNow);
+
+    public (DateTime StartUtc, DateTime EndUtc) GetUtcRange(DateOnly localDate)
+    {
+        var startLocal = DateTime.SpecifyKind(localDate.ToDateTime(TimeOnly.MinValue), DateTimeKind.Unspecified);
+        var endLocal = startLocal.AddDays(1);
+
+        return (TimeZoneInfo.ConvertTimeToUtc(startLocal, _zone),
+                TimeZoneInfo.ConvertTimeToUtc(endLocal, _zone));
+    }
 }

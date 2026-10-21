@@ -16,12 +16,30 @@ public class TransactionController(ITransactionService transaction) : Controller
     private readonly ITransactionService _transaction = transaction;
 
     private int CurrentUserId => int.Parse(User.FindFirst("sub")!.Value);
+    private bool IsAdmin => User.IsInRole("admin");
 
     [HttpGet("next-invoice")]
     public async Task<IActionResult> NextInvoice()
     {
         var result = await _transaction.GetNextInvoiceAsync(CurrentUserId);
         return Ok(ApiResponse<NextInvoiceDto>.Ok(result));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetHistory(
+        [FromQuery] DateOnly? date,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20)
+    {
+        var result = await _transaction.GetHistoryAsync(CurrentUserId, IsAdmin, date, page, pageSize);
+        return Ok(ApiResponse<PagedResult<TransactionSummaryDto>>.Ok(result));
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = await _transaction.GetByIdAsync(CurrentUserId, IsAdmin, id);
+        return Ok(ApiResponse<TransactionDto>.Ok(result));
     }
 
     [HttpPost]

@@ -110,6 +110,87 @@ public class TransactionService(AppDbContext db, IInvoiceNumberService invoice, 
         };
     }
 
+    private const int MaxPageSize = 20;
+    public async Task<PagedResult<TransactionSummaryDto>> GetHistoryAsync(int userId, bool isAdmin, DateOnly? date, int page, int pageSize)
+    {
+        page = Math.Max(page, 1);
+        pageSize = Math.Clamp(pageSize, 1, MaxPageSize);
+
+        var (startUtc, endUtc) = _time.GetUtcRange(date ?? _time.LocalToday);
+
+        var query = _db.Transactions.AsNoTracking()
+        .Where(t => t.TransactionDate >= startUtc && t.TransactionDate < endUtc);
+
+        if (!isAdmin)
+        {
+            query = query.Where(t => t.UserId == userId);
+        }
+
+        var totalItems = await query.CountAsync();
+        var rows = await query
+            .OrderBy(t => t.TransactionDate).ThenBy(t => t.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(t => new
+            {
+                t.Id,
+                t.InvoiceNumber,
+                t.TransactionDate,
+                CashierName = t.User.FullName,
+                t.PaymentMethod,
+                t.TotalAmount,
+                ItemCount = t.Details.Count
+            })
+            .ToListAsync();
+
+        return new PagedResult<TransactionSummaryDto>
+        {
+            Items = [.. rows.Select(r => new TransactionSummaryDto()
+            {
+                Id = r.Id,
+            InvoiceNumber = r.InvoiceNumber,
+            TransactionDate = _time.ToLocal(r.TransactionDate),
+            CashierName = r.CashierName,
+            PaymentMethod = r.PaymentMethod.ToString(),
+            ItemCount = r.ItemCount,
+            TotalAmount = r.TotalAmount
+            })],
+            Page = page,
+            PageSize = pageSize,
+            TotalItems = totalItems,
+            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+        };
+    }
+
+    public async Task<TransactionDto> GetByIdAsync(int userId, bool isAdmin, int id)
+    {
+        var t = await _db.Transactions.AsNoTracking()
+            .Include(x => x.User)
+            .Include(x => x.Details)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (t == null || (!isAdmin && t.UserId != userId)) throw new AppException("Transaksi tidak ditemukan.", StatusCodes.Status404NotFound);
+
+        return new TransactionDto
+        {
+            Id = t.Id,
+            InvoiceNumber = t.InvoiceNumber,
+            TransactionDate = _time.ToLocal(t.TransactionDate),
+            CashierId = t.UserId,
+            CashierName = t.User.FullName,
+            PaymentMethod = t.PaymentMethod.ToString(),
+            TotalAmount = t.TotalAmount,
+            Items = [.. t.Details.Select(d => new TransactionItemDto
+            {
+                ProductId = d.ProductId,
+                ProductName = d.Product.Name,
+                Quantity = d.Quantity,
+                UnitPrice = d.UnitPrice,
+                SubTotal = d.SubTotal
+            })]
+        };
+    }
+
     private static bool IsUniqueViolation(DbUpdateException ex) =>
         ex.InnerException is SqlException { Number: 2601 or 2627 };
 }
