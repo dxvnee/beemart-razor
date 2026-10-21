@@ -20,7 +20,7 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandles exception");
+            _logger.LogError(ex, "Unhandled exception");
             await WriteAsync(context, StatusCodes.Status500InternalServerError, "Terjadi kesalahan pada server. Silakan coba lagi.");
         }
     }
