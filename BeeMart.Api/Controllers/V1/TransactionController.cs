@@ -9,6 +9,7 @@ namespace BeeMart.Api.Controllers.V1;
 
 [ApiController]
 [ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/transactions")]
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize]
 public class TransactionController(ITransactionService transaction) : ControllerBase

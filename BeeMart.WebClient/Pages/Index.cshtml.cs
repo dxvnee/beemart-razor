@@ -1,19 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace BeeMart.WebClient.Pages;
 
-public class IndexModel : PageModel
+public class IndexModel : BasePage
 {
-    private readonly ILogger<IndexModel> _logger;
-
-    public IndexModel(ILogger<IndexModel> logger)
-    {
-        _logger = logger;
-    }
-
-    public void OnGet()
-    {
-
-    }
+    public IActionResult OnGet() =>
+        IsLoggedIn ? RedirectToPage("/NewTransaction") : RedirectToPage("/Login");
 }
