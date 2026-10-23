@@ -5,73 +5,66 @@
     ViewData["Title"] = "History Transaction";
     var idCulture = new CultureInfo("id-ID");
     var result = Model.Result;
+    var cashierName = ViewContext.HttpContext.Session.GetString("fullName");
 }
 
-<h1>History Transaction</h1>
+<p class="filter-hint">Pencarian Data Transaksi (<strong>Hanya Kasir: @cashierName</strong>)</p>
 
-<form method="get" class="card filter">
-    <div>
-        <label for="date">Tanggal</label>
+<form method="get" class="filter">
+    <div class="filter-group">
+        <label for="date">Pilih Tanggal:</label>
         <input type="date" id="date" name="date" value="@Model.Date" required />
     </div>
-    <button type="submit" class="btn btn-primary">Tampilkan</button>
+    <button type="submit" class="btn btn-primary">Cari Data</button>
 </form>
 
-<section class="card">
-    @if (result is null)
-    {
-        <p class="empty">Data tidak dapat dimuat.</p>
-    }
-    else if (result.Items.Count == 0)
-    {
-        <p class="empty">Tidak ada transaksi pada tanggal ini.</p>
-    }
-    else
-    {
-        var no = (result.Page - 1) * result.PageSize;
-        <table class="table">
-            <thead>
+@if (result is null)
+{
+    <p class="empty">Data tidak dapat dimuat.</p>
+}
+else if (result.Items.Count == 0)
+{
+    <p class="empty">Tidak ada transaksi pada tanggal ini.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>No. Transaksi</th>
+                <th>Tanggal &amp; Jam</th>
+                <th>Kasir</th>
+                <th>Jml Item</th>
+                <th>Pembayaran</th>
+                <th>Total Harga</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var t in result.Items)
+            {
                 <tr>
-                    <th>No</th>
-                    <th>Invoice</th>
-                    <th>Tanggal &amp; Jam</th>
-                    <th>Kasir</th>
-                    <th>Pembayaran</th>
-                    <th class="num">Item</th>
-                    <th class="num">Total</th>
+                    <td>@t.InvoiceNo</td>
+                    <td>@t.TransactionDate.ToString("yyyy-MM-dd HH:mm", idCulture)</td>
+                    <td>@t.CashierName</td>
+                    <td>@t.ItemCount</td>
+                    <td>@t.PaymentMethod</td>
+                    <td>Rp @t.TotalPrice.ToString("N0", idCulture)</td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var t in result.Items)
-                {
-                    no++;
-                    <tr>
-                        <td>@no</td>
-                        <td>@t.InvoiceNo</td>
-                        <td>@t.TransactionDate.ToString("dd MMM yyyy HH:mm:ss", idCulture)</td>
-                        <td>@t.CashierName</td>
-                        <td>@t.PaymentMethod</td>
-                        <td class="num">@t.ItemCount</td>
-                        <td class="num">Rp @t.TotalPrice.ToString("N0", idCulture)</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+            }
+        </tbody>
+    </table>
 
-        <div class="pager">
-            <div>
-                @if (result.Page > 1)
-                {
-                    <a class="btn" asp-page="/History" asp-route-date="@Model.Date" asp-route-hal="@(result.Page - 1)">&laquo; Sebelumnya</a>
-                }
-            </div>
-            <span>Halaman @result.Page dari @result.TotalPages (@result.TotalItems transaksi)</span>
-            <div>
-                @if (result.Page < result.TotalPages)
-                {
-                    <a class="btn" asp-page="/History" asp-route-date="@Model.Date" asp-route-hal="@(result.Page + 1)">Berikutnya &raquo;</a>
-                }
-            </div>
-        </div>
-    }
-</section>
+    <div class="pager">
+        @for (int i = 1; i <= result.TotalPages; i++)
+        {
+            if (i == result.Page)
+            {
+                <span class="page-current">@i</span>
+            }
+            else
+            {
+                <a asp-page="/History" asp-route-date="@Model.Date" asp-route-hal="@i">@i</a>
+            }
+        }
+    </div>
+}

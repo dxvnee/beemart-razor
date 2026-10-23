@@ -1,10 +1,10 @@
 @page
 @model Register
 @{
-    ViewData["Title"] = "Daftar Akun Baru";
+    ViewData["Title"] = "Register Akun";
 }
-<section class="card auth-card">
-    <h1>Register</h1>
+<section class="auth-card">
+    <h1>Register Akun</h1>
     <form method="post">
         <div class="field">
             <label asp-for="Username">Username</label>
@@ -13,7 +13,7 @@
             <span asp-validation-for="Username" class="field-error"></span>
         </div>
         <div class="field">
-            <label asp-for="FullName">Nama Lengkap</label>
+            <label asp-for="FullName">Full Name</label>
             <input asp-for="FullName" required maxlength="100" />
             <span asp-validation-for="FullName" class="field-error"></span>
         </div>
@@ -25,19 +25,19 @@
             <span asp-validation-for="Password" class="field-error"></span>
         </div>
         <div class="field">
-            <label asp-for="ConfirmPassword">Konfirmasi Password</label>
+            <label asp-for="ConfirmPassword">Re-Password</label>
             <input asp-for="ConfirmPassword" type="password" required autocomplete="new-password" />
             <span asp-validation-for="ConfirmPassword" class="field-error"></span>
         </div>
         <div class="field">
             <label asp-for="Role">Role</label>
             <select asp-for="Role" required>
-                <option value="Kasir">Kasir</option>
+                <option value="Cashier">Kasir</option>
                 <option value="Admin">Admin</option>
             </select>
             <span asp-validation-for="Role" class="field-error"></span>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Register</button>
+        <button type="submit" class="btn btn-primary btn-block">Daftar</button>
     </form>
     <p class="hint">Sudah punya akun? <a asp-page="/Login">Login</a></p>
 </section>

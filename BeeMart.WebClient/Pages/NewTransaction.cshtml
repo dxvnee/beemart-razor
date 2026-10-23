@@ -5,60 +5,58 @@
 }
 @Html.AntiForgeryToken()
 
-<h1>New Transaction</h1>
-
-<section class="card tx-header">
-    <div>
-        <span class="label">Invoice Number</span>
-        <input id="invoice" type="text" value="Memuat..." readonly tabindex="-1" />
-    </div>
-    <div>
-        <span class="label">Kasir</span>
-        <strong>@HttpContext.Session.GetString("fullName")</strong>
-    </div>
-    <div>
-        <span class="label">Tanggal &amp; Jam</span>
-        <strong id="clock">-</strong>
-    </div>
-</section>
-
-<div class="tx-layout">
-    <section class="card">
-        <h2>Cari Barang</h2>
-        <div class="field">
-            <input id="search" type="search" placeholder="Ketik nama barang..." autocomplete="off" />
-        </div>
-        <table class="table">
-            <thead>
-                <tr><th>Barang</th><th>Harga</th><th>Qty</th><th></th></tr>
-            </thead>
-            <tbody id="search-results"></tbody>
-        </table>
-    </section>
-
-    <section class="card">
-        <h2>Keranjang</h2>
-        <table class="table">
-            <thead>
-                <tr><th>Barang</th><th>Harga</th><th>Qty</th><th>Subtotal</th><th></th></tr>
-            </thead>
-            <tbody id="cart-body"></tbody>
-        </table>
-
-        <div class="total-row">
-            <span>Total</span>
-            <strong id="total">Rp 0</strong>
-        </div>
-
-        <div class="field">
-            <label for="payment">Metode Pembayaran</label>
-            <select id="payment" required>
-                <option value="">-- Memuat metode... --</option>
-            </select>
-        </div>
-        <button id="btn-save" type="button" class="btn btn-primary btn-block">Simpan Transaksi</button>
-    </section>
+<div class="invoice-bar">
+    Invoice No: <span id="invoice">Memuat...</span>
 </div>
+
+<p class="search-hint">Cari Barang (Ketik: Apel / Susu, lalu tekan Enter)</p>
+<div class="field">
+    <input id="search" type="search" placeholder="Ketik nama barang..." autocomplete="off" />
+</div>
+
+<div id="search-results-section" style="display:none;">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nama Barang</th>
+                <th>Berat</th>
+                <th>Stock</th>
+                <th>Harga</th>
+                <th>Diskon</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="search-results"></tbody>
+    </table>
+</div>
+
+<h2 style="margin-top: 20px;">Daftar Belanjaan</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nama Barang</th>
+            <th>Harga</th>
+            <th>Diskon</th>
+            <th>Qty</th>
+            <th>Subtotal</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody id="cart-body"></tbody>
+</table>
+
+<div class="total-row">
+    Total: <span id="total" style="margin-left: 8px;">Rp 0</span>
+</div>
+
+<div class="payment-row">
+    <label for="payment">Metode Pembayaran:</label>
+    <select id="payment" required>
+        <option value="">-- Memuat metode... --</option>
+    </select>
+</div>
+
+<button id="btn-save" type="button" class="btn btn-primary btn-block">Submit Transaksi</button>
 
 @section Scripts {
     <script src="~/js/new-transaction.js" asp-append-version="true"></script>

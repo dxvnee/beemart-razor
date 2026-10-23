@@ -36,7 +36,7 @@ public class Register(ApiClient api) : BasePage
 
     [BindProperty]
     [Required(ErrorMessage = "Role wajib dipilih.")]
-    public string Role { get; set; } = "Kasir";
+    public string Role { get; set; } = "Cashier";
 
     public IActionResult OnGet() => IsLoggedIn ? RedirectToPage("/NewTransaction") : Page();
 

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="utf-8" />
@@ -11,27 +11,47 @@
     var fullName = Context.Session.GetString("fullName");
     var role = Context.Session.GetString("role");
     var toast = TempData["Toast"] as string;
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+    var isNewTx = currentPage == "/NewTransaction";
 }
-<header class="topbar">
-    <a class="brand" asp-page="/Index">BeeMart</a>
-    @if (!string.IsNullOrEmpty(fullName))
-    {
-        <nav class="nav">
-            <a asp-page="/NewTransaction">New Transaction</a>
-            <a asp-page="/History">History Transaction</a>
-        </nav>
+
+@if (!string.IsNullOrEmpty(fullName))
+{
+    <header class="topbar">
+        <a class="brand" asp-page="/NewTransaction">BeeMart</a>
         <div class="user">
-            <span>@fullName (@role)</span>
+            @if (isNewTx)
+            {
+                <span class="user-info"><span id="header-clock"></span> | Kasir: @fullName</span>
+            }
+            else
+            {
+                <span class="user-info">Role: <span class="role-badge">@(role == "Kasir" ? "Cashier" : role)</span> | Login: @fullName</span>
+            }
             <form method="post" asp-page="/Logout">
-                <button type="submit" class="btn btn-ghost">Logout</button>
+                <button type="submit" class="btn btn-logout">Logout</button>
             </form>
         </div>
-    }
-</header>
+    </header>
 
-<main class="container">
-    @RenderBody()
-</main>
+    <main class="container">
+        <div class="app-card">
+            <div class="tab-nav-wrapper">
+                <nav class="tab-nav">
+                    <a asp-page="/NewTransaction" class="@(isNewTx ? "active" : "")">New Transaction</a>
+                    <a asp-page="/History" class="@(currentPage == "/History" ? "active" : "")">History Transaction</a>
+                </nav>
+            </div>
+            @RenderBody()
+        </div>
+    </main>
+}
+else
+{
+    <main class="container-auth">
+        @RenderBody()
+    </main>
+}
 
 <div id="toast-container"></div>
 @if (!string.IsNullOrEmpty(toast))
