@@ -1,0 +1,77 @@
+@page
+@model History
+@using System.Globalization
+@{
+    ViewData["Title"] = "History Transaction";
+    var idCulture = new CultureInfo("id-ID");
+    var result = Model.Result;
+}
+
+<h1>History Transaction</h1>
+
+<form method="get" class="card filter">
+    <div>
+        <label for="date">Tanggal</label>
+        <input type="date" id="date" name="date" value="@Model.Date" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Tampilkan</button>
+</form>
+
+<section class="card">
+    @if (result is null)
+    {
+        <p class="empty">Data tidak dapat dimuat.</p>
+    }
+    else if (result.Items.Count == 0)
+    {
+        <p class="empty">Tidak ada transaksi pada tanggal ini.</p>
+    }
+    else
+    {
+        var no = (result.Page - 1) * result.PageSize;
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Invoice</th>
+                    <th>Tanggal &amp; Jam</th>
+                    <th>Kasir</th>
+                    <th>Pembayaran</th>
+                    <th class="num">Item</th>
+                    <th class="num">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in result.Items)
+                {
+                    no++;
+                    <tr>
+                        <td>@no</td>
+                        <td>@t.InvoiceNumber</td>
+                        <td>@t.TransactionDate.ToString("dd MMM yyyy HH:mm:ss", idCulture)</td>
+                        <td>@t.CashierName</td>
+                        <td>@t.PaymentMethod</td>
+                        <td class="num">@t.ItemCount</td>
+                        <td class="num">Rp @t.TotalAmount.ToString("N0", idCulture)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="pager">
+            <div>
+                @if (result.Page > 1)
+                {
+                    <a class="btn" asp-page="/History" asp-route-date="@Model.Date" asp-route-hal="@(result.Page - 1)">&laquo; Sebelumnya</a>
+                }
+            </div>
+            <span>Halaman @result.Page dari @result.TotalPages (@result.TotalItems transaksi)</span>
+            <div>
+                @if (result.Page < result.TotalPages)
+                {
+                    <a class="btn" asp-page="/History" asp-route-date="@Model.Date" asp-route-hal="@(result.Page + 1)">Berikutnya &raquo;</a>
+                }
+            </div>
+        </div>
+    }
+</section>
