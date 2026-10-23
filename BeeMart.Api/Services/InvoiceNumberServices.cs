@@ -10,19 +10,23 @@ public class InvoiceNumberServices(AppDbContext db, ITimeService time) : IInvoic
     private readonly AppDbContext _db = db;
     private readonly ITimeService _time = time;
 
-    public async Task<string> GenerateAsync(int userId)
+    public async Task<string> GenerateAsync(string IdUser)
     {
         var date = _time.LocalNow.ToString("ddMMyy", CultureInfo.InvariantCulture);
-        var prefix = $"{userId:D5}{date}";
+        var prefix = $"{IdUser}{date}";
 
-        var last = await _db.Transactions
-        .AsNoTracking()
-        .Where(t => t.InvoiceNumber.StartsWith(prefix))
-        .OrderByDescending(t => t.InvoiceNumber)
-        .Select(t => t.InvoiceNumber)
-        .FirstOrDefaultAsync();
+        var last = await _db.TrTransactions
+            .AsNoTracking()
+            .Where(t => t.InvoiceNo.StartsWith(prefix))
+            .OrderByDescending(t => t.InvoiceNo)
+            .Select(t => t.InvoiceNo)
+            .FirstOrDefaultAsync();
 
-        var next = last is null ? 1 : int.Parse(last[^3..]) + 1;
+        var next = 1;
+        if (last is not null && int.TryParse(last[prefix.Length..], out var lastSeq))
+        {
+            next = lastSeq + 1;
+        }
 
         if (next > 999)
             throw new AppException("Nomor invoice sudah mencapai batas maksimal.", StatusCodes.Status409Conflict);

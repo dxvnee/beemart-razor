@@ -10,7 +10,7 @@ public class RegisterRequest
     public string Username { get; set; } = null!;
 
     [Required(ErrorMessage = "Nama lengkap wajib diisi.")]
-    [StringLength(100, ErrorMessage = "Nama lengkap maksimal 100 karakter.")]
+    [StringLength(300, ErrorMessage = "Nama lengkap maksimal 300 karakter.")]
     public string FullName { get; set; } = null!;
 
     [Required(ErrorMessage = "Password wajib diisi.")]
@@ -19,6 +19,6 @@ public class RegisterRequest
     public string Password { get; set; } = null!;
 
     [Required(ErrorMessage = "Role wajib dipilih.")]
-    [RegularExpression(@"(?i)^(Admin|Kasir)$", ErrorMessage = "Role harus Admin atau Kasir.")]
+    [RegularExpression(@"(?i)^(Admin|Cashier)$", ErrorMessage = "Role harus Admin atau Kasir.")]
     public string Role { get; set; } = null!;
 }

@@ -16,8 +16,19 @@ public class TransactionController(ITransactionService transaction) : Controller
 {
     private readonly ITransactionService _transaction = transaction;
 
-    private int CurrentUserId => int.Parse(User.FindFirst("sub")!.Value);
-    private bool IsAdmin => User.IsInRole("admin");
+    private string CurrentUserId =>
+        User.FindFirst("sub")?.Value
+        ?? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+        ?? throw new AppException("Identitas pengguna tidak ditemukan.", StatusCodes.Status401Unauthorized);
+
+    private bool IsAdmin => User.IsInRole("Admin");
+
+    [HttpGet("payment-methods")]
+    public async Task<IActionResult> GetPaymentMethods()
+    {
+        var result = await _transaction.GetPaymentMethodsAsync();
+        return Ok(ApiResponse<List<PaymentMethodDto>>.Ok(result));
+    }
 
     [HttpGet("next-invoice")]
     public async Task<IActionResult> NextInvoice()
@@ -33,11 +44,11 @@ public class TransactionController(ITransactionService transaction) : Controller
         [FromQuery] int pageSize = 20)
     {
         var result = await _transaction.GetHistoryAsync(CurrentUserId, IsAdmin, date, page, pageSize);
-        return Ok(ApiResponse<PagedResult<TransactionSummaryDto>>.Ok(result));
+        return Ok(ApiResponse<PagedResult<HistoryDto>>.Ok(result));
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById(int id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(string id)
     {
         var result = await _transaction.GetByIdAsync(CurrentUserId, IsAdmin, id);
         return Ok(ApiResponse<TransactionDto>.Ok(result));

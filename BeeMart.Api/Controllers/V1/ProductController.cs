@@ -22,8 +22,8 @@ public class ProductController(IProductService products) : ControllerBase
         return Ok(ApiResponse<List<ProductDto>>.Ok(result));
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById(int id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(string id)
     {
         var result = await _products.GetByIdAsync(id);
         return Ok(ApiResponse<ProductDto>.Ok(result));

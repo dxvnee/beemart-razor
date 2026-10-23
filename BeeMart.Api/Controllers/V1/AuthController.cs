@@ -34,9 +34,10 @@ public class AuthController(IAuthService auth) : ControllerBase
     {
         var me = new
         {
-            Id = User.FindFirst("sub")?.Value,
-            Username = User.Identity?.Name,
-            Role = User.FindFirst("role")?.Value,
+            Id = User.FindFirst("sub")?.Value ?? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
+            Username = User.Identity?.Name ?? User.FindFirst("name")?.Value,
+            Role = User.FindFirst("role")?.Value ?? User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value,
+            FullName = User.FindFirst("fullName")?.Value
         };
         return Ok(ApiResponse<object>.Ok(me));
     }

@@ -5,5 +5,5 @@ namespace BeeMart.Api.Services;
 public interface IProductService
 {
     Task<List<ProductDto>> SearchAsync(string? keyword);
-    Task<ProductDto> GetByIdAsync(int id);
+    Task<ProductDto> GetByIdAsync(string id);
 }

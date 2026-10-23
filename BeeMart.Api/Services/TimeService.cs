@@ -18,10 +18,10 @@ public class TimeService : ITimeService
     }
     public DateTime UtcNow => DateTime.UtcNow;
 
-    public DateTime LocalNow => ToLocal(DateTime.UtcNow).DateTime;
+    public DateTime LocalNow => ToLocal(DateTime.UtcNow);
 
-    public DateTimeOffset ToLocal(DateTime utc) =>
-        TimeZoneInfo.ConvertTime(new DateTimeOffset(DateTime.SpecifyKind(utc, DateTimeKind.Utc)), _zone);
+    public DateTime ToLocal(DateTime utc) =>
+        TimeZoneInfo.ConvertTime(DateTime.SpecifyKind(utc, DateTimeKind.Utc), _zone);
 
     public DateOnly LocalToday => DateOnly.FromDateTime(LocalNow);
 

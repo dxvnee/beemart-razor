@@ -2,9 +2,10 @@ namespace BeeMart.Api.DTOs;
 
 public class ProductDto
 {
-    public int Id { get; set; }
+    public string IdProduct { get; set; } = null!;
     public string Name { get; set; } = null!;
-    public decimal Price { get; set; }
+    public decimal Weight { get; set; }
     public int Stock { get; set; }
-    public string? ImageFileName { get; set; }
+    public decimal Price { get; set; }
+    public decimal Discount { get; set; }
 }

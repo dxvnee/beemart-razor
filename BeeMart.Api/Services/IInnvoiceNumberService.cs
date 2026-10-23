@@ -2,5 +2,5 @@ namespace BeeMart.Api.Services;
 
 public interface IInvoiceNumberService
 {
-    Task<String> GenerateAsync(int userId);
+    Task<string> GenerateAsync(string IdUser);
 }
