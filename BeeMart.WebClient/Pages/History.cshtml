@@ -47,12 +47,12 @@
                     no++;
                     <tr>
                         <td>@no</td>
-                        <td>@t.InvoiceNumber</td>
+                        <td>@t.InvoiceNo</td>
                         <td>@t.TransactionDate.ToString("dd MMM yyyy HH:mm:ss", idCulture)</td>
                         <td>@t.CashierName</td>
                         <td>@t.PaymentMethod</td>
                         <td class="num">@t.ItemCount</td>
-                        <td class="num">Rp @t.TotalAmount.ToString("N0", idCulture)</td>
+                        <td class="num">Rp @t.TotalPrice.ToString("N0", idCulture)</td>
                     </tr>
                 }
             </tbody>

@@ -21,14 +21,21 @@ public class NewTransaction(ApiClient api) : BasePage
     public async Task<IActionResult> OnGetNextInvoiceAsync()
     {
         if (!IsLoggedIn) return Unauthorized();
-        var result = await _api.GetAsync<NextInvoice>("transaction/next-invoice");
+        var result = await _api.GetAsync<NextInvoice>("transactions/next-invoice");
+        return new JsonResult(result);
+    }
+
+    public async Task<IActionResult> OnGetPaymentMethodsAsync()
+    {
+        if (!IsLoggedIn) return Unauthorized();
+        var result = await _api.GetAsync<List<PaymentMethodItem>>("transactions/payment-methods");
         return new JsonResult(result);
     }
 
     public async Task<IActionResult> OnPostSaveAsync([FromBody] SaveTransactionRequest request)
     {
         if (!IsLoggedIn) return Unauthorized();
-        var result = await _api.PostAsync<object>("transaction", request);
+        var result = await _api.PostAsync<object>("transactions", request);
         return new JsonResult(result);
     }
 }

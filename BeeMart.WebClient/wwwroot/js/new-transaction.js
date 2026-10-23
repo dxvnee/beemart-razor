@@ -35,8 +35,25 @@
     async function loadInvoice() {
         const r = await call('/NewTransaction?handler=NextInvoice');
         if (!r) return;
-        if (r.success) $('invoice').value = r.data.invoiceNumber;
+        if (r.success) $('invoice').value = r.data.invoiceNo;
         else showToast('error', r.message);
+    }
+
+    async function loadPaymentMethods() {
+        const r = await call('/NewTransaction?handler=PaymentMethods');
+        if (!r) return;
+        const select = $('payment');
+        select.innerHTML = '<option value="">-- Pilih metode --</option>';
+        if (r.success && r.data) {
+            r.data.forEach(pm => {
+                const opt = document.createElement('option');
+                opt.value = pm.idPaymentMethod;
+                opt.textContent = pm.methodName;
+                select.appendChild(opt);
+            });
+        } else {
+            showToast('error', r.message || 'Gagal memuat metode pembayaran.');
+        }
     }
 
     async function search() {
@@ -57,14 +74,14 @@
             <tr>
                 <td>${esc(p.name)}</td>
                 <td>${rupiah(p.price)}</td>
-                <td><input type="number" min="1" max="9999" value="1" class="qty-input" id="qty-${p.id}"></td>
-                <td><button type="button" class="btn btn-small" data-add="${p.id}">Tambah</button></td>
+                <td><input type="number" min="1" max="9999" value="1" class="qty-input" id="qty-${p.idProduct}"></td>
+                <td><button type="button" class="btn btn-small" data-add="${p.idProduct}">Tambah</button></td>
             </tr>`).join('');
 
         body.querySelectorAll('[data-add]').forEach(btn => {
             btn.addEventListener('click', () => {
-                const product = products.find(p => p.id === Number(btn.dataset.add));
-                addToCart(product, parseInt($('qty-' + product.id).value, 10));
+                const product = products.find(p => p.idProduct === btn.dataset.add);
+                addToCart(product, parseInt($('qty-' + product.idProduct).value, 10));
             });
         });
     }
@@ -82,12 +99,12 @@
     }
 
     function addToCart(product, qty) {
-        const existing = cart.find(c => c.productId === product.id);
+        const existing = cart.find(c => c.idProduct === product.idProduct);
         const newQty = (existing ? existing.qty : 0) + qty;
         if (!validQty(qty, product.stock) || !validQty(newQty, product.stock)) return;
 
         if (existing) existing.qty = newQty;
-        else cart.push({ productId: product.id, name: product.name, price: product.price, qty: qty, stock: product.stock });
+        else cart.push({ idProduct: product.idProduct, name: product.name, price: product.price, qty: qty, stock: product.stock });
         renderCart();
     }
 
@@ -139,8 +156,8 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': antiforgery },
                 body: JSON.stringify({
-                    paymentMethod: payment,
-                    items: cart.map(c => ({ productId: c.productId, quantity: c.qty }))
+                    idPaymentMethod: parseInt(payment, 10),
+                    items: cart.map(c => ({ idProduct: c.idProduct, qty: c.qty }))
                 })
             });
             if (!r) return;
@@ -149,7 +166,7 @@
                 return showToast('error', (r.message + ' ' + details).trim());
             }
 
-            showToast('success', 'Transaksi ' + r.data.invoiceNumber + ' berhasil. Total ' + rupiah(r.data.totalAmount));
+            showToast('success', 'Transaksi ' + r.data.invoiceNo + ' berhasil. Total ' + rupiah(r.data.totalPrice));
             cart = [];
             $('payment').value = '';
             renderCart();
@@ -165,6 +182,7 @@
     tick();
     setInterval(tick, 1000);
     loadInvoice();
+    loadPaymentMethods();
     search();
     renderCart();
 })();

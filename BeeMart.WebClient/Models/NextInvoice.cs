@@ -2,5 +2,5 @@ namespace BeeMart.WebClient.Models;
 
 public class NextInvoice
 {
-    public string InvoiceNumber { get; set; } = "";
+    public string InvoiceNo { get; set; } = "";
 }

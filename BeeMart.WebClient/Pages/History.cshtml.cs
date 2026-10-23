@@ -27,7 +27,7 @@ public class History(ApiClient api) : BasePage
                 .ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
         }
 
-        var url = $"transaction?date={Uri.EscapeDataString(Date)}&page={Math.Max(PageNumber, 1)}&pageSize=20";
+        var url = $"transactions?date={Uri.EscapeDataString(Date)}&page={Math.Max(PageNumber, 1)}&pageSize=20";
         var response = await _api.GetAsync<PagedData<SummaryItem>>(url);
 
         if (response.StatusCode == 401) return SessionExpired();
