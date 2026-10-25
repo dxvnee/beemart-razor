@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="utf-8" />
@@ -9,10 +9,11 @@
 <body>
 @{
     var fullName = Context.Session.GetString("fullName");
+    var username = Context.Session.GetString("username") ?? fullName;
     var role = Context.Session.GetString("role");
     var toast = TempData["Toast"] as string;
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
-    var isNewTx = currentPage == "/NewTransaction";
+    var isNewTx = string.Equals(currentPage, "/NewTransaction", StringComparison.Ordinal);
 }
 
 @if (!string.IsNullOrEmpty(fullName))
@@ -22,11 +23,11 @@
         <div class="user">
             @if (isNewTx)
             {
-                <span class="user-info"><span id="header-clock"></span> | Kasir: @fullName</span>
+                <span class="user-info"><span id="header-clock"></span> | Kasir: @username</span>
             }
             else
             {
-                <span class="user-info">Role: <span class="role-badge">@(role == "Kasir" ? "Cashier" : role)</span> | Login: @fullName</span>
+                <span class="user-info">Role: <span class="role-badge">@(role == "Kasir" ? "Cashier" : role)</span> | Login: @username</span>
             }
             <form method="post" asp-page="/Logout">
                 <button type="submit" class="btn btn-logout">Logout</button>

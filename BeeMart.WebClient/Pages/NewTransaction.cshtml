@@ -28,6 +28,25 @@
         </thead>
         <tbody id="search-results"></tbody>
     </table>
+
+    <div id="selected-product-box" class="selected-product-box" style="display:none;">
+        <div class="selected-title">Barang Terpilih: <span id="sel-name"></span></div>
+        <div class="selected-row">
+            <div class="selected-col">
+                <span class="selected-label">Harga Satuan:</span>
+                <span id="sel-price" class="selected-value"></span>
+            </div>
+            <div class="selected-col">
+                <span class="selected-label">Sisa Stock:</span>
+                <span id="sel-stock" class="selected-value"></span>
+            </div>
+            <div class="selected-col qty-col">
+                <label for="sel-qty">Qty:</label>
+                <input type="number" id="sel-qty" value="1" min="1" class="qty-field" />
+            </div>
+            <button type="button" id="btn-add-cart" class="btn btn-primary">Masukkan ke Keranjang</button>
+        </div>
+    </div>
 </div>
 
 <h2 style="margin-top: 20px;">Daftar Belanjaan</h2>

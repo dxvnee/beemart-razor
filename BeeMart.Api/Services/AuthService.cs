@@ -17,30 +17,17 @@ public class AuthService(AppDbContext db, IJwtTokenService jwt) : IAuthService
         var username = request.Username.Trim();
         if (await _db.MsUsers.AnyAsync(u => u.Username == username))
         {
-            throw new AppException("Username already exists", StatusCodes.Status400BadRequest);
+            throw new AppException("username has already exists", StatusCodes.Status400BadRequest);
         }
 
         var role = request.Role.Trim().Equals("Admin", StringComparison.OrdinalIgnoreCase) ? "Admin" : "Cashier";
-        var prefix = role == "Admin" ? "ADM" : "CSH";
 
-        var lastUser = await _db.MsUsers
-            .Where(u => u.IdUser.StartsWith(prefix))
-            .OrderByDescending(u => u.IdUser)
-            .Select(u => u.IdUser)
-            .FirstOrDefaultAsync();
-
-        var nextSeq = 1;
-        if (lastUser is not null && int.TryParse(lastUser[prefix.Length..], out var lastSeq))
+        // Generate 5-digit numeric IdUser to fulfill: [5 digit userID][ddmmyy][3 digit running number]
+        string idUser;
+        do
         {
-            nextSeq = lastSeq + 1;
-        }
-
-        if (nextSeq > 99)
-        {
-            throw new AppException($"Kapasitas ID untuk role {role} sudah penuh (maksimal 99).", StatusCodes.Status400BadRequest);
-        }
-
-        var idUser = $"{prefix}{nextSeq:D2}";
+            idUser = Random.Shared.Next(10000, 99999).ToString();
+        } while (await _db.MsUsers.AnyAsync(u => u.IdUser == idUser));
 
         var user = new MsUser
         {
@@ -63,10 +50,17 @@ public class AuthService(AppDbContext db, IJwtTokenService jwt) : IAuthService
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
     {
         var username = request.Username.Trim();
+        var requestedRole = request.Role?.Trim();
+        var normalizedRole = string.Equals(requestedRole, "Kasir", StringComparison.OrdinalIgnoreCase) ? "Cashier" : requestedRole;
+
         var user = await _db.MsUsers.FirstOrDefaultAsync(u => u.Username == username);
 
-        if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            throw new AppException("Username atau password salah.", StatusCodes.Status401Unauthorized);
+        if (user is null
+            || !string.Equals(user.Role, normalizedRole, StringComparison.OrdinalIgnoreCase)
+            || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        {
+            throw new AppException("Invalid login", StatusCodes.Status401Unauthorized);
+        }
 
         if (!user.Stsrc)
             throw new AppException("Akun Anda telah dinonaktifkan.", StatusCodes.Status403Forbidden);

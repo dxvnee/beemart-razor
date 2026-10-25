@@ -17,6 +17,10 @@ public class Login(ApiClient api) : BasePage
     [Required(ErrorMessage = "Password wajib diisi.")]
     public string Password { get; set; } = "";
 
+    [BindProperty]
+    [Required(ErrorMessage = "Role wajib dipilih.")]
+    public string Role { get; set; } = "Cashier";
+
     public IActionResult OnGet() =>
         IsLoggedIn ? RedirectToPage("/NewTransaction") : Page();
 
@@ -24,7 +28,7 @@ public class Login(ApiClient api) : BasePage
     {
         if (!ModelState.IsValid) return Page();
 
-        var result = await _api.PostAsync<AuthData>("auth/login", new { Username, Password });
+        var result = await _api.PostAsync<AuthData>("auth/login", new { Username, Password, Role });
         if (!result.Success || result.Data is null)
         {
             ToastError(result.Message!);
@@ -33,6 +37,7 @@ public class Login(ApiClient api) : BasePage
 
         HttpContext.Session.SetString("token", result.Data.Token);
         HttpContext.Session.SetString("fullName", result.Data.User.FullName!);
+        HttpContext.Session.SetString("username", result.Data.User.Username!);
         HttpContext.Session.SetString("role", result.Data.User.Role!);
         return RedirectToPage("/NewTransaction");
     }

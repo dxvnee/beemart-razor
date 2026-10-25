@@ -87,6 +87,8 @@
         renderResults(r.data);
     }
 
+    let selectedProduct = null;
+
     function renderResults(products) {
         const section = $('search-results-section');
         const body = $('search-results');
@@ -104,16 +106,31 @@
                 <td>${p.stock}</td>
                 <td>${rupiah(p.price)}</td>
                 <td>${pct(p.discount)}</td>
-                <td><button type="button" class="btn btn-small btn-select" data-add="${p.idProduct}">Pilih</button></td>
+                <td><button type="button" class="btn btn-small btn-select" data-select="${p.idProduct}">Pilih</button></td>
             </tr>`).join('');
 
-        body.querySelectorAll('[data-add]').forEach(btn => {
+        body.querySelectorAll('[data-select]').forEach(btn => {
             btn.addEventListener('click', () => {
-                const product = products.find(p => p.idProduct === btn.dataset.add);
-                addToCart(product, 1);
+                const product = products.find(p => p.idProduct === btn.dataset.select);
+                if (!product) return;
+                selectedProduct = product;
+                $('sel-name').textContent = product.name;
+                $('sel-price').textContent = rupiah(product.price);
+                $('sel-stock').textContent = product.stock;
+                $('sel-qty').value = 1;
+                $('selected-product-box').style.display = 'block';
             });
         });
     }
+
+    $('btn-add-cart').addEventListener('click', () => {
+        if (!selectedProduct) return;
+        const qty = parseInt($('sel-qty').value, 10);
+        if (!validQty(qty, selectedProduct.stock)) return;
+        addToCart(selectedProduct, qty);
+        $('selected-product-box').style.display = 'none';
+        selectedProduct = null;
+    });
 
     function validQty(qty, stock) {
         if (!Number.isInteger(qty) || qty < 1 || qty > 9999) {
@@ -121,7 +138,7 @@
             return false;
         }
         if (qty > stock) {
-            showToast('error', 'Stok tidak mencukupi (tersisa ' + stock + ').');
+            showToast('error', 'Jumlah barang yang dimasukkan melebihi sisa stok.');
             return false;
         }
         return true;
@@ -217,6 +234,8 @@
             loadInvoice();
             $('search').value = '';
             $('search-results-section').style.display = 'none';
+            $('selected-product-box').style.display = 'none';
+            selectedProduct = null;
         } catch {
             showToast('error', 'Gagal menyimpan transaksi. Periksa koneksi Anda.');
         } finally {

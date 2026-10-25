@@ -21,7 +21,7 @@ public class ProductService(AppDbContext db) : IProductService
 
         return await query
             .OrderBy(p => p.Name)
-            .Take(50)
+            .Take(10)
             .Select(p => new ProductDto
             {
                 IdProduct = p.IdProduct,

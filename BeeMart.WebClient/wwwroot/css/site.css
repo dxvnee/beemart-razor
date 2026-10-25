@@ -233,6 +233,51 @@ input:focus, select:focus {
     padding: 16px;
 }
 
+/* selected product */
+.selected-product-box {
+    background: #eaf4fd;
+    border: 1px solid #c2def6;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 14px 0 18px;
+}
+.selected-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #222;
+    margin-bottom: 10px;
+}
+.selected-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.selected-col {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+}
+.selected-label {
+    color: #555;
+    font-size: 0.9rem;
+}
+.selected-value {
+    font-weight: 700;
+    color: #222;
+}
+.qty-col label {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+.qty-field {
+    width: 70px !important;
+    padding: 6px 8px !important;
+    text-align: center;
+}
+
 /* total & payment */
 .total-row {
     display: flex;

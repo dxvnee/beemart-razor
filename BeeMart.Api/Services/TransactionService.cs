@@ -158,8 +158,8 @@ public class TransactionService(AppDbContext db, IInvoiceNumberService invoice, 
 
         var totalItems = await query.CountAsync();
         var rows = await query
-            .OrderByDescending(t => t.TransactionDate)
-            .ThenByDescending(t => t.InvoiceNo)
+            .OrderBy(t => t.TransactionDate)
+            .ThenBy(t => t.InvoiceNo)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(t => new

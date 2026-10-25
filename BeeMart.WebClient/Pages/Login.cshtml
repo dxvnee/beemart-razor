@@ -2,11 +2,11 @@
 @using System.Security.Permissions
 @model Login
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "BeeMart Login";
 }
 
 <section class="auth-card">
-    <h1>Login</h1>
+    <h1>BeeMart Login</h1>
     <form method="post">
         <div class="field">
             <label asp-for="Username">Username</label>
@@ -17,6 +17,14 @@
             <label asp-for="Password">Password</label>
             <input asp-for="Password" type="password" required autocomplete="current-password" />
             <span asp-validation-for="Password" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="Role">Role</label>
+            <select asp-for="Role" required>
+                <option value="Cashier">Kasir</option>
+                <option value="Admin">Admin</option>
+            </select>
+            <span asp-validation-for="Role" class="field-error"></span>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Login</button>
     </form>
