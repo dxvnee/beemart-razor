@@ -8,8 +8,7 @@
     <form method="post">
         <div class="field">
             <label asp-for="Username">Username</label>
-            <input asp-for="Username" required minlength="3" maxlength="50" pattern="[a-zA-Z0-9_.]+"
-                title="Huruf, angka, titik, dan underscore." autocomplete="username" />
+            <input asp-for="Username" required maxlength="50" autocomplete="username" />
             <span asp-validation-for="Username" class="field-error"></span>
         </div>
         <div class="field">
@@ -19,9 +18,7 @@
         </div>
         <div class="field">
             <label asp-for="Password">Password</label>
-            <input asp-for="Password" type="password" required minlength="6"
-                pattern="(?=.*[A-Za-z])(?=.*\d).{6,}"
-                title="Minimal 6 karakter, harus mengandung huruf dan angka." autocomplete="new-password" />
+            <input asp-for="Password" type="password" required maxlength="100" autocomplete="new-password" />
             <span asp-validation-for="Password" class="field-error"></span>
         </div>
         <div class="field">

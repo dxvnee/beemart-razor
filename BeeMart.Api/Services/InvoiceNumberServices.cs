@@ -13,24 +13,26 @@ public class InvoiceNumberServices(AppDbContext db, ITimeService time) : IInvoic
     public async Task<string> GenerateAsync(string IdUser)
     {
         var date = _time.LocalNow.ToString("ddMMyy", CultureInfo.InvariantCulture);
-        var prefix = $"{IdUser}{date}";
 
-        var last = await _db.TrTransactions
+        var todayInvoices = await _db.TrTransactions
             .AsNoTracking()
-            .Where(t => t.InvoiceNo.StartsWith(prefix))
-            .OrderByDescending(t => t.InvoiceNo)
+            .Where(t => t.InvoiceNo.Length == 14 && t.InvoiceNo.Substring(5, 6) == date)
             .Select(t => t.InvoiceNo)
-            .FirstOrDefaultAsync();
+            .ToListAsync();
 
-        var next = 1;
-        if (last is not null && int.TryParse(last[prefix.Length..], out var lastSeq))
+        var maxSeq = 0;
+        foreach (var inv in todayInvoices)
         {
-            next = lastSeq + 1;
+            if (int.TryParse(inv.AsSpan(11, 3), out var s))
+            {
+                if (s > maxSeq) maxSeq = s;
+            }
         }
 
+        var next = maxSeq + 1;
         if (next > 999)
             throw new AppException("Nomor invoice sudah mencapai batas maksimal.", StatusCodes.Status409Conflict);
 
-        return $"{prefix}{next:D3}";
+        return $"{IdUser}{date}{next:D3}";
     }
 }

@@ -73,7 +73,7 @@ public class TransactionService(AppDbContext db, IInvoiceNumberService invoice, 
 
             if (product.Stock < line.Quantity)
             {
-                throw new AppException($"Stok {product.Name} tidak mencukupi (tersisa {product.Stock}).", StatusCodes.Status409Conflict);
+                throw new AppException("Jumlah barang yang dimasukkan melebihi sisa stok.", StatusCodes.Status400BadRequest);
             }
 
             product.Stock -= line.Quantity;
@@ -146,7 +146,12 @@ public class TransactionService(AppDbContext db, IInvoiceNumberService invoice, 
         page = Math.Max(page, 1);
         pageSize = Math.Clamp(pageSize, 1, MaxPageSize);
 
-        var (startUtc, endUtc) = _time.GetUtcRange(date ?? _time.LocalToday);
+        if (!date.HasValue)
+        {
+            throw new AppException("Parameter tanggal wajib diisi.", StatusCodes.Status400BadRequest);
+        }
+
+        var (startUtc, endUtc) = _time.GetUtcRange(date.Value);
 
         var query = _db.TrTransactions.AsNoTracking()
         .Where(t => t.TransactionDate >= startUtc && t.TransactionDate < endUtc);
@@ -171,7 +176,7 @@ public class TransactionService(AppDbContext db, IInvoiceNumberService invoice, 
                 CashierName = t.IdUserNavigation.FullName,
                 PaymentMethod = t.IdPaymentMethodNavigation.MethodName,
                 t.TotalPrice,
-                ItemCount = t.TrTransactionDetails.Count
+                ItemCount = t.TrTransactionDetails.Sum(d => d.Qty)
             })
             .ToListAsync();
 

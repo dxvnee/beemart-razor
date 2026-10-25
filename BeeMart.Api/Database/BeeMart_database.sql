@@ -527,6 +527,23 @@ VALUES
 (NEWID(), 'Dolphin Garam Halus Beryodium 250g', 250, 120, 3500, 0, 1, GETDATE(), 'SYSTEM', NULL, NULL),
 (NEWID(), 'Ladaku Merica Bubuk Sachet 10g', 10, 200, 1500, 0, 1, GETDATE(), 'SYSTEM', NULL, NULL),
 (NEWID(), 'Desaku Kunyit Bubuk Sachet 10g', 10, 180, 1500, 0, 1, GETDATE(), 'SYSTEM', NULL, NULL),
-(NEWID(), 'Desaku Ketumbar Bubuk Sachet 10g', 10, 180, 1500, 0, 1, GETDATE(), 'SYSTEM', NULL, NULL),
-(NEWID(), 'Bamboe Bumbu Rendang 35g', 35, 90, 6500, 0, 1, GETDATE(), 'SYSTEM', NULL, NULL)
-;
+(NEWID(), 'Bamboe Bumbu Rendang 35g', 35, 90, 6500, 0, 1, GETDATE(), 'SYSTEM', NULL, NULL),
+
+-- ==========================================
+-- PRODUK CONTOH MOCKUP SOAL (Apel & Susu)
+-- ==========================================
+(NEWID(), 'Apel Fuji', 1.00, 50, 35000, 0, 1, GETDATE(), 'SYSTEM', NULL, NULL),
+(NEWID(), 'Apel Merah', 1.00, 30, 30000, 5, 1, GETDATE(), 'SYSTEM', NULL, NULL),
+(NEWID(), 'Apel Hijau', 1.00, 25, 28000, 0, 1, GETDATE(), 'SYSTEM', NULL, NULL),
+(NEWID(), 'Susu UHT Full Cream', 1.00, 50, 18000, 0, 1, GETDATE(), 'SYSTEM', NULL, NULL);
+
+/* ==========================================
+   SEEDING USERS (1 Admin & 2 Kasir)
+   Default password for all users: Password123
+   ========================================== */
+INSERT INTO [MsUser] 
+([IdUser], [Username], [FullName], [PasswordHash], [Role], [Stsrc], [Datein], [Userin])
+VALUES
+('10001', 'admin', 'Administrator', '$2b$12$49Kk6ApQx0734ViJDrnvV.WmSva3.F2W6CBomEjwd9OVZw7vX2LEC', 'Admin', 1, GETDATE(), 'SYSTEM'),
+('76985', 'steven', 'Steven', '$2b$12$49Kk6ApQx0734ViJDrnvV.WmSva3.F2W6CBomEjwd9OVZw7vX2LEC', 'Cashier', 1, GETDATE(), 'SYSTEM'),
+('66859', 'gabri', 'Gabri', '$2b$12$49Kk6ApQx0734ViJDrnvV.WmSva3.F2W6CBomEjwd9OVZw7vX2LEC', 'Cashier', 1, GETDATE(), 'SYSTEM');
