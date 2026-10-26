@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeMart.Api", "BeeMart.Api\BeeMart.Api.csproj", "{DA9D9F35-64EA-4C67-9182-82577FCEDC48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeMart.WebClient", "BeeMart.WebClient\BeeMart.WebClient.csproj", "{B214E231-8BCA-465A-A845-954316B419DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeeMart.Tests", "BeeMart.Tests\BeeMart.Tests.csproj", "{1DC20FA4-47D8-49C1-8E91-DB36FCB73EE6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA9D9F35-64EA-4C67-9182-82577FCEDC48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA9D9F35-64EA-4C67-9182-82577FCEDC48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA9D9F35-64EA-4C67-9182-82577FCEDC48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA9D9F35-64EA-4C67-9182-82577FCEDC48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B214E231-8BCA-465A-A845-954316B419DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B214E231-8BCA-465A-A845-954316B419DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B214E231-8BCA-465A-A845-954316B419DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B214E231-8BCA-465A-A845-954316B419DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DC20FA4-47D8-49C1-8E91-DB36FCB73EE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DC20FA4-47D8-49C1-8E91-DB36FCB73EE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DC20FA4-47D8-49C1-8E91-DB36FCB73EE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DC20FA4-47D8-49C1-8E91-DB36FCB73EE6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
