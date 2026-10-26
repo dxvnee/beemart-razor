@@ -1,4 +1,7 @@
+using BeeMart.WebClient.Common;
 using BeeMart.WebClient.Services;
+
+DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
