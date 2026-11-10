@@ -1,4 +1,13 @@
 -- =======================================================================
+-- 0. RESET / CLEANUP EXISTING TABLES (in FK dependency order)
+-- =======================================================================
+DROP TABLE IF EXISTS [TrTransactionDetail];
+DROP TABLE IF EXISTS [TrTransaction];
+DROP TABLE IF EXISTS [MsProduct];
+DROP TABLE IF EXISTS [MsUser];
+DROP TABLE IF EXISTS [LtPaymentMethod];
+
+-- =======================================================================
 -- 1. TABLE: LtPaymentMethod
 -- Menyimpan data master metode pembayaran (Cash, Debit, Credit).
 -- =======================================================================

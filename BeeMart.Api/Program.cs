@@ -134,6 +134,32 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.MapPost("/api/dev/reset-database", async (AppDbContext db, IWebHostEnvironment env) =>
+    {
+        var sqlPath = Path.Combine(env.ContentRootPath, "Database", "BeeMart_database.sql");
+        if (!File.Exists(sqlPath))
+            return Results.NotFound("BeeMart_database.sql not found.");
+
+        var sql = await File.ReadAllTextAsync(sqlPath);
+        await db.Database.ExecuteSqlRawAsync(sql);
+        return Results.Ok(new { message = "Database successfully replaced and initialized from BeeMart_database.sql" });
+    }).AllowAnonymous();
+}
+
+if (args.Contains("--init-db") || args.Contains("--reset-db"))
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var sqlPath = Path.Combine(app.Environment.ContentRootPath, "Database", "BeeMart_database.sql");
+    if (File.Exists(sqlPath))
+    {
+        Console.WriteLine("Applying BeeMart_database.sql to database...");
+        var sql = await File.ReadAllTextAsync(sqlPath);
+        await db.Database.ExecuteSqlRawAsync(sql);
+        Console.WriteLine("Database successfully replaced and seeded with BeeMart_database.sql!");
+        return;
+    }
 }
 
 app.UseAuthentication();
